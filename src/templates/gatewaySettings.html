@@ -1,0 +1,37 @@
+<h2>Environment</h2>
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightswitchField({
+label: gateway.getAttributeLabel('testMode'),
+name: 'testMode',
+disabled: getenv('KLARNA_TEST_MODE'),
+on: gateway.isTestMode(),
+instructions: not getenv('KLARNA_TEST_MODE') ? '<p class="notice with-icon">This can be set to the environment variable <code>$KLARNA_TEST_</code>',
+    errors: gateway.getFirstError('testMode'),
+    warning: getenv('KLARNA_TEST_MODE') ? "This variable is overwritten by the KLARNA_TEST_MODE env varialbe" : null
+    }) }}
+</p>
+
+
+<h2>Authentication</h2>
+
+<div class="field">
+    <div style="padding-right: 5%; display: inline-block; width: 45%;">
+        {{ forms.autosuggestField({
+        label: gateway.getAttributeLabel('userName'),
+        name: 'userName',
+        value: gateway.userName,
+        errors: gateway.getFirstError('userName'),
+        suggestEnvVars: true
+        }) }}
+    </div>
+    <div style="display: inline-block; width: 45%;">
+        {{ forms.autosuggestField({
+        label: gateway.getAttributeLabel('password'),
+        name: 'password',
+        value: gateway.password,
+        errors: gateway.getFirstError('password'),
+        suggestEnvVars: true
+        }) }}
+    </div>
+</div>
