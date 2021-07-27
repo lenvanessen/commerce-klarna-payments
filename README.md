@@ -22,22 +22,4 @@ To install the plugin, follow these instructions.
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Commerce Klarna Payments.
 
-## Commerce Klarna Payments Overview
-
--Insert text here-
-
-## Configuring Commerce Klarna Payments
-
--Insert text here-
-
-## Using Commerce Klarna Payments
-
--Insert text here-
-
-## Commerce Klarna Payments Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
-
 Brought to you by [Len van Essen](vanessen.io)
