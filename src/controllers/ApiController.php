@@ -5,11 +5,12 @@ namespace lenvanessen\commerce\klarna\controllers;
 use Craft;
 use craft\commerce\Plugin;
 use craft\web\Controller;
+use lenvanessen\commerce\klarna\CommerceKlarnaPayments;
 use lenvanessen\commerce\klarna\gateways\Gateway;
 
 class ApiController extends Controller
 {
-    protected $allowAnonymous = ['disable'];
+    protected $allowAnonymous = ['disable', 'client'];
     public $enableCsrfValidation = false;
 
     public function actionDisable()
@@ -25,8 +26,15 @@ class ApiController extends Controller
         }
 
         // Set lock
-        Craft::$app->getSession()->set('klarna_locked', true);
+        Craft::$app->getSession()->set(CommerceKlarnaPayments::STORAGE_NOT_AVAILABLE, true);
 
         return true;
+    }
+
+    public function actionClient()
+    {
+        return $this->asJson([
+            'id' => Craft::$app->getSession()->get('klarna_client_id')
+        ]);
     }
 }

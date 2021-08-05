@@ -15,6 +15,7 @@ use craft\web\View;
 use Klarna\Rest\Payments\Orders;
 use Klarna\Rest\Transport\ConnectorInterface;
 use Klarna\Rest\Transport\GuzzleConnector;
+use lenvanessen\commerce\klarna\CommerceKlarnaPayments;
 use lenvanessen\commerce\klarna\models\forms\KlarnaPaymentsForm;
 use lenvanessen\commerce\klarna\responses\PurchaseResponse;
 use lenvanessen\commerce\klarna\transformers\OrderTransformer;
@@ -180,6 +181,9 @@ class Gateway extends BaseGateway
             OrderTransformer::format($transaction->getOrder())
         );
 
+        Craft::$app->getSession()->remove(CommerceKlarnaPayments::STORAGE_SESSION_ID);
+        Craft::$app->getSession()->remove(CommerceKlarnaPayments::STORAGE_CLIENT_ID);
+
         return new PurchaseResponse($data);
     }
 
@@ -340,7 +344,7 @@ class Gateway extends BaseGateway
         $cart = Plugin::getInstance()->getCarts()->getCart();
         $country = $cart->shippingAddress ? strtolower($cart->shippingAddress->countryIso) : 'nl';
 
-        return ! Craft::$app->getSession()->has('klarna_locked') && in_array($country, ['nl', 'be']);
+        return ! Craft::$app->getSession()->has(CommerceKlarnaPayments::STORAGE_NOT_AVAILABLE) && in_array($country, ['nl', 'be']);
     }
 
     /**

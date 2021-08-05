@@ -36,6 +36,9 @@ class CommerceKlarnaPayments extends Plugin
 {
     const EVENT_FORMAT_ADDRESS = 'onFormatAddress';
 
+    const STORAGE_SESSION_ID = 'klarna_session_id';
+    const STORAGE_CLIENT_ID = 'klarna_client_id';
+    const STORAGE_NOT_AVAILABLE = 'klarna_locked';
     /**
      * @var CommerceKlarnaPayments
      */
@@ -55,11 +58,6 @@ class CommerceKlarnaPayments extends Plugin
      * @var bool
      */
     public $hasCpSection = false;
-
-    public function __construct($id, $parent = null, array $config = [])
-    {
-        parent::__construct($id, $parent, $config);
-    }
 
     /**
      * @inheritdoc
@@ -87,7 +85,11 @@ class CommerceKlarnaPayments extends Plugin
                     return;
                 }
 
-                $this->updateKlarnaSession($order);
+                try {
+                    $this->updateKlarnaSession($order);
+                } catch (\Exception $exception) {
+                    Craft::error($exception->getMessage());
+                }
             }
         );
 
@@ -101,6 +103,7 @@ class CommerceKlarnaPayments extends Plugin
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['disableKlarna'] = 'commerce-klarna-payments/api/disable';
+                $event->rules['klarnaClient'] = 'commerce-klarna-payments/api/client';
             }
         );
     }
@@ -114,7 +117,7 @@ class CommerceKlarnaPayments extends Plugin
      */
     private function updateKlarnaSession(Order $order): void
     {
-        $sessionId = Craft::$app->getSession()->get('klarna_session_id');
+        $sessionId = Craft::$app->getSession()->get(self::STORAGE_SESSION_ID);
         $orderPayload = OrderTransformer::format($order);
 
         $sessionsService = new Sessions($order->getGateway()->connector(), $sessionId);
@@ -124,8 +127,8 @@ class CommerceKlarnaPayments extends Plugin
         } else {
             $sessionsService->create($orderPayload);
 
-            Craft::$app->getSession()->set('klarna_session_id', $sessionsService->getId());
-            Craft::$app->getSession()->set('klarna_client_id', $sessionsService->getArrayCopy()['client_token']);
+            Craft::$app->getSession()->set(self::STORAGE_SESSION_ID, $sessionsService->getId());
+            Craft::$app->getSession()->set(self::STORAGE_CLIENT_ID, $sessionsService->getArrayCopy()['client_token']);
         }
     }
 }
