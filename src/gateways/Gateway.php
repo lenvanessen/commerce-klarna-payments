@@ -342,9 +342,13 @@ class Gateway extends BaseGateway
     public function availableForUseWithOrder(Order $order): bool
     {
         $cart = Plugin::getInstance()->getCarts()->getCart();
+        $sessionService = Craft::$app->getSession();
         $country = $cart->shippingAddress ? strtolower($cart->shippingAddress->countryIso) : 'nl';
 
-        return ! Craft::$app->getSession()->has(CommerceKlarnaPayments::STORAGE_NOT_AVAILABLE) && in_array($country, ['nl', 'be']);
+
+        return ! $sessionService->has(CommerceKlarnaPayments::STORAGE_NOT_AVAILABLE)
+            && $sessionService->has(CommerceKlarnaPayments::STORAGE_CLIENT_ID)
+            && in_array($country, ['nl', 'be']);
     }
 
     /**
