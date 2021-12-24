@@ -39,6 +39,7 @@ class CommerceKlarnaPayments extends Plugin
     const STORAGE_SESSION_ID = 'klarna_session_id';
     const STORAGE_CLIENT_ID = 'klarna_client_id';
     const STORAGE_NOT_AVAILABLE = 'klarna_locked';
+
     /**
      * @var CommerceKlarnaPayments
      */

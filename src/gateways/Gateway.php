@@ -345,9 +345,7 @@ class Gateway extends BaseGateway
         $sessionService = Craft::$app->getSession();
         $country = $cart->shippingAddress ? strtolower($cart->shippingAddress->countryIso) : 'nl';
 
-
         return ! $sessionService->has(CommerceKlarnaPayments::STORAGE_NOT_AVAILABLE)
-            && $sessionService->has(CommerceKlarnaPayments::STORAGE_CLIENT_ID)
             && in_array($country, ['nl', 'be']);
     }
 

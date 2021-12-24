@@ -34,7 +34,7 @@ class ApiController extends Controller
     public function actionClient()
     {
         return $this->asJson([
-            'id' => Craft::$app->getSession()->get('klarna_client_id')
+            'id' => Craft::$app->getSession()->get(CommerceKlarnaPayments::STORAGE_CLIENT_ID)
         ]);
     }
 }
